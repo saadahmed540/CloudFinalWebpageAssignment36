@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retail Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #007bff;
+            color: white;
+            padding: 20px 30px;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 32px;
+        }
+        .header .logout-btn {
+            background-color: #ff4d4d;
+            color: white;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .header .logout-btn:hover {
+            background-color: #e60000;
+        }
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            padding: 20px;
+        }
+        .chart {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .chart h2 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        .chart h2 a {
+            text-decoration: none;
+            color: #007bff;
+        }
+        .chart h2 a:hover {
+            text-decoration: underline;
+        }
+        .kpi-container {
+            grid-column: span 2;
+            display: flex;
+            justify-content: space-around;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .kpi {
+            text-align: center;
+        }
+        .kpi a {
+            text-decoration: none;
+            color: #007bff;
+        }
+        .kpi a:hover {
+            text-decoration: underline;
+        }
+        .kpi h3 {
+            font-size: 24px;
+            margin: 10px 0;
+            color: #007bff;
+        }
+        .kpi p {
+            font-size: 14px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1 style = "text-align: 'center';">Retail KPI Dashboard</h1>
+    <a href="{{ url_for('index') }}" class="logout-btn">Logout</a>
+</div>
+
+<div class="dashboard-container">
+
+    <!-- KPIs Section -->
+    <div class="kpi-container">
+        <div class="kpi">
+            <a href="{{ url_for('search') }}">
+                <h3>Search</h3>
+                <p>Search for Data</p>
+            </a>
+        </div> 
+        <div class="kpi">
+            <a href="{{ url_for('basket_analysis_ml') }}">
+                <h3>Basket Analysis Prediction</h3>
+                <p>Find the commonly purchased product combinations.</p>
+            </a>
+        </div>
+        <div class="kpi">
+            <a href="{{ url_for('upload') }}">
+                <h3>Upload</h3>
+                <p>Upload the datasets.</p>
+            </a>
+        </div> 
+    </div>
+
+    <!-- Charts -->
+    <div class="chart">
+        <h2><a href="{{ url_for('engagement_over_time') }}">Demographics and Engagement</a></h2>
+        <iframe src="{{ url_for('engagement_over_time') }}" width="100%" height="300px" style="border: none;"></iframe>
+    </div>
+
+    <div class="chart">
+        <h2><a href="{{ url_for('demographics') }}">Engagement Over Time</a></h2>
+        <iframe src="{{ url_for('demographics') }}" width="100%" height="300px" style="border: none;"></iframe>
+    </div>
+
+    <div class="chart">
+        <h2><a href="{{ url_for('basket_analysis') }}">Basket Analysis</a></h2>
+        <iframe src="{{ url_for('basket_analysis') }}" width="100%" height="300px" style="border: none;"></iframe>
+    </div>
+
+    <div class="chart">
+        <h2><a href="{{ url_for('seasonal_trends') }}">Seasonal Trends</a></h2>
+        <iframe src="{{ url_for('seasonal_trends') }}" width="100%" height="300px" style="border: none;"></iframe>
+    </div>
+
+    <div class="chart">
+        <h2><a href="{{ url_for('brand_preferences') }}">Brand Preferences</a></h2>
+        <iframe src="{{ url_for('brand_preferences') }}" width="100%" height="300px" style="border: none;"></iframe>
+    </div>
+
+    <div class="chart">
+        <h2><a href="{{ url_for('churn_prediction') }}">Churn Prediction</a></h2>
+        <iframe src="{{ url_for('churn_prediction') }}" width="100%" height="300px" style="border: none;"></iframe>
+    </div>
+
+</div>
+
+</body>
+</html>
