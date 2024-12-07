@@ -2,7 +2,7 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 import plotly.express as px
-
+ 
 def perform_churn_analysis(merged, households, churn_threshold=6):
     try:
         # Convert 'purchase_' column to datetime
