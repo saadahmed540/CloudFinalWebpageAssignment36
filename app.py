@@ -113,9 +113,9 @@ def upload():
     return render_template('upload.html')
 
 # Load datasets
-households = pd.read_csv('400_households.csv')
-transactions = pd.read_csv('400_transactions.csv')
-products = pd.read_csv('400_products.csv')
+households = pd.read_csv('https://cloudfinalassignment36.blob.core.windows.net/households/400_households.csv')
+transactions = pd.read_csv('https://cloudfinalassignment36.blob.core.windows.net/transactions/400_transactions.csv')
+products = pd.read_csv('https://cloudfinalassignment36.blob.core.windows.net/products/400_products.csv')
 
 # Standardize column names
 transactions.columns = transactions.columns.str.strip().str.lower()
