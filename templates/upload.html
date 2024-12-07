@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Upload Data</title>
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Data</title>
     <style>
         .btn-small {
             padding: 8px 12px;
@@ -94,35 +100,68 @@
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <a href="{{ url_for('dashboard') }}" class="btn-small">Dashboard</a>
-        </div>
-        <h1>Upload Dataset</h1>
+        <h1>Upload Datasets</h1>
         <form method="POST" enctype="multipart/form-data">
-            <label for="table_name">Select Table:</label>
-            <select id="table_name" name="table_name" required>
-                <option value="Households">Households</option>
-                <option value="Transactions">Transactions</option>
-                <option value="Products">Products</option>
-            </select>
-
-            <label for="file">Choose CSV File:</label>
-            <input type="file" id="file" name="file" required>
-
+            <label for="households_file">Households CSV File:</label>
+            <input type="file" id="households_file" name="households_file" required>
+            
+            <label for="transactions_file">Transactions CSV File:</label>
+            <input type="file" id="transactions_file" name="transactions_file" required>
+            
+            <label for="products_file">Products CSV File:</label>
+            <input type="file" id="products_file" name="products_file" required>
+            
+            <br>
             <button type="submit">Upload</button>
         </form>
 
-        <div class="messages">
-            {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                <ul>
-                    {% for category, message in messages %}
-                    <li class="{{ category }}">{{ message }}</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-            {% endwith %}
+        <div class="button-container">
+            <button onclick="window.location.href = '/dashboard';">Go to Home Page</button>
         </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul>
+                {% for category, message in messages %}
+                <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        {% endwith %}
+    </div>
+</body>
+</html>
+</head>
+<body>
+    <div class="container">
+        <h1>Upload Datasets</h1>
+        <form method="POST" enctype="multipart/form-data">
+            <label for="households_file">Households CSV File:</label>
+            <input type="file" id="households_file" name="households_file" required>
+            
+            <label for="transactions_file">Transactions CSV File:</label>
+            <input type="file" id="transactions_file" name="transactions_file" required>
+            
+            <label for="products_file">Products CSV File:</label>
+            <input type="file" id="products_file" name="products_file" required>
+            
+            <br>
+            <button type="submit">Upload</button>
+        </form>
+
+        <div class="button-container">
+            <button onclick="window.location.href = '/dashboard';">Go to Home Page</button>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul>
+                {% for category, message in messages %}
+                <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        {% endwith %}
     </div>
 </body>
 </html>

@@ -76,40 +76,131 @@ def search():
                 return f"An error occurred: {e}"
     return render_template('search.html', results=results, hshd_num=hshd_num)
 
+# Data Loading Web App
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
     if request.method == 'POST':
         try:
+            # Check if files are uploaded
             if not request.files:
                 return "No files uploaded. Please upload at least one file."
+
             conn = pyodbc.connect(DB_CONNECTION_STRING)
             cursor = conn.cursor()
-            # Process files
-            files_to_process = {
-                'households_file': ('Households', households, [
-                    'hshd_num', 'loyalty_flag', 'age_range', 'marital_status',
-                    'income_range', 'homeowner_flag', 'household_composition', 'hh_size', 'children'
-                ]),
-                'transactions_file': ('Transactions', transactions, [
-                    'hshd_num', 'basket_num', 'date', 'product_num', 'spend', 'units', 'region'
-                ]),
-                'products_file': ('Products', products, [
-                    'product_num', 'department', 'commodity', 'brand_type', 'natural_organic'
-                ]),
-            }
-            for file_key, (table_name, df, required_columns) in files_to_process.items():
-                if file_key in request.files:
-                    file = request.files[file_key]
-                    new_df = pd.read_csv(file)
-                    new_df = normalize_columns(new_df)
-                    if not set(required_columns).issubset(new_df.columns):
-                        return f"Missing required columns in {table_name}.csv."
-                    # Insert into database logic...
+
+            # Process Households.csv
+            if 'households_file' in request.files:
+                households_file = request.files['households_file']
+                households_df = pd.read_csv(households_file)
+
+                # Normalize column names
+                households_df.columns = households_df.columns.str.strip().str.lower()
+
+                # Clean numeric columns (e.g., 'hh_size', 'children')
+                households_df['hh_size'] = pd.to_numeric(households_df['hh_size'], errors='coerce')
+                households_df['children'] = pd.to_numeric(households_df['children'], errors='coerce')
+
+                # Check for missing or invalid values
+                if households_df[['hh_size', 'children']].isnull().any().any():
+                    return "Invalid numeric values in Households.csv. Please check your data."
+
+                for _, row in households_df.iterrows():
+                    cursor.execute(
+                        """
+                        INSERT INTO Households (Hshd_num, Loyalty_flag, Age_range, Marital_status, Income_range,
+                                                Homeowner_flag, Household_composition, HH_size, Children)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                        """,
+                        row['hshd_num'], row['l'], row['age_range'], row['marital'],
+                        row['income_range'], row['homeowner'], row['hshd_composition'], row['hh_size'], row['children']
+                    )
+
+
+            # Process Households.csv
+            # if 'households_file' in request.files:
+            #     households_file = request.files['households_file']
+            #     households_df = pd.read_csv(households_file)
+
+            #     # Normalize column names to lowercase
+            #     households_df.columns = households_df.columns.str.strip().str.lower()
+
+            #     # Verify required columns exist
+            #     required_columns = [
+            #         'hshd_num', 'l', 'age_range', 'marital',
+            #         'income_range', 'homeowner', 'hshd_composition', 'hh_size', 'children'
+            #     ]
+            #     if not set(required_columns).issubset(households_df.columns):
+            #         return "Missing required columns in Households.csv."
+
+            #     for _, row in households_df.iterrows():
+            #         cursor.execute(
+            #             """
+            #             INSERT INTO Households (Hshd_num, Loyalty_flag, Age_range, Marital_status, Income_range, Homeowner_flag, Household_composition, HH_size, Children)
+            #             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            #             """,
+            #             row['hshd_num'], row['l'], row['age_range'], row['marital'],
+            #             row['income_range'], row['homeowner'], row['hshd_composition'], row['hh_size'], row['children']
+            #         )
+
+            # Process Transactions.csv
+            if 'transactions_file' in request.files:
+                transactions_file = request.files['transactions_file']
+                transactions_df = pd.read_csv(transactions_file)
+
+                # Normalize column names to lowercase
+                transactions_df.columns = transactions_df.columns.str.strip().str.lower()
+
+                # Verify required columns exist
+                required_columns = [
+                    'basket_num', 'hshd_num', 'purchase_', 'product_num', 'spend', 'units', 'store_r','week_num','year'
+                ]
+                if not set(required_columns).issubset(transactions_df.columns):
+                    return "Missing required columns in Transactions.csv."
+
+                for _, row in transactions_df.iterrows():
+                    cursor.execute(
+                        """
+                        INSERT INTO Transactions (Basket_num, Hshd_num, Date, Product_num, Spend, Units, Store_region, Week_num, Year)
+                        VALUES (?, ?, ?, ?, ?, ?, ?,?,?)
+                        """,
+                        row['basket_num'], row['hshd_num'],row['purchase_'], row['product_num'],
+                        row['spend'], row['units'], row['store_r'],row['week_num'], row['year']
+                    )
+
+            # Process Products.csv
+            if 'products_file' in request.files:
+                products_file = request.files['products_file']
+                products_df = pd.read_csv(products_file)
+
+                # Normalize column names to lowercase
+                products_df.columns = products_df.columns.str.strip().str.lower()
+
+                # Verify required columns exist
+                required_columns = [
+                    'product_num', 'department', 'commodity', 'brand_ty', 'natural_organic_flag'
+                ]
+                if not set(required_columns).issubset(products_df.columns):
+                    return "Missing required columns in Products.csv."
+
+                for _, row in products_df.iterrows():
+                    cursor.execute(
+                        """
+                        INSERT INTO Products (Product_num, Department, Commodity, Brand_type, Natural_organic_flag)
+                        VALUES (?, ?, ?, ?, ?)
+                        """,
+                        row['product_num'], row['department'], row['commodity'], row['brand_ty'], row['natural_organic_flag']
+                    )
+
+            # Commit changes and close connection
             conn.commit()
             conn.close()
-            return redirect(url_for('search'))
+
+            # Redirect to the search page after successful upload
+            return redirect(url_for('search_data'))
+
         except Exception as e:
             return f"An error occurred while uploading data: {e}"
+
     return render_template('upload.html')
 
 # Load datasets
