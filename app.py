@@ -198,12 +198,31 @@ def engagement_over_time():
 
 @app.route('/basket_analysis')
 def basket_analysis():
+    # Grouping and summarizing basket data
     basket_data = merged.groupby(['hshd_num', 'basket_num'])['commodity'].apply(list).reset_index()
-    basket_data['commodity'] = basket_data['commodity'].apply(lambda x: ', '.join(x))
-    fig = px.bar(
+    basket_data['commodity_count'] = basket_data['commodity'].apply(len)  # Number of items in basket
+    basket_data['commodity'] = basket_data['commodity'].apply(lambda x: ', '.join(x))  # Join commodities into a string
+
+    # Sunburst chart with valid soft colors
+    fig = px.sunburst(
         basket_data.head(10),
-        x='hshd_num', y='commodity', title='Top 10 Basket Combinations'
+        path=['hshd_num', 'basket_num'],  # Hierarchy: Household -> Basket
+        values='commodity_count',  # Basket size (number of items)
+        hover_data=['commodity'],  # Display commodities
+        title='Top 10 Basket Combinations by Household',
+        color='commodity_count',  # Color based on number of items
+        color_continuous_scale='blues'  # Use 'blues' for soft colors
     )
+
+    # Simplify layout
+    fig.update_layout(
+        margin=dict(t=50, l=50, r=50, b=50),
+        coloraxis_colorbar=dict(
+            title="Number of Items",
+            tickprefix="Items: "
+        )
+    )
+
     return fig.to_html()
 
 @app.route('/seasonal_trends')
