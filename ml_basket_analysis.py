@@ -8,7 +8,7 @@ import plotly.express as px
 def perform_basket_analysis(merged, target_item):
     if merged.empty:
         return None, "Merged data is unavailable."
-
+ 
     try:
         # Prepare basket data
         basket_data = merged.copy()
