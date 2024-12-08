@@ -13,18 +13,22 @@
         }
         .header {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            justify-content: center; /* Center content horizontally */
+            align-items: center; /* Align items vertically */
             background-color: #007bff;
             color: white;
             padding: 20px 30px;
             margin-bottom: 30px;
+            position: relative; /* Allows for positioning the logout button */
         }
         .header h1 {
             margin: 0;
             font-size: 32px;
+            text-align: center;
         }
-        .header .logout-btn {
+        .logout-btn {
+            position: absolute;
+            right: 30px; /* Position the logout button on the right */
             background-color: #ff4d4d;
             color: white;
             padding: 10px 20px;
@@ -34,7 +38,7 @@
             cursor: pointer;
             text-decoration: none;
         }
-        .header .logout-btn:hover {
+        .logout-btn:hover {
             background-color: #e60000;
         }
         .dashboard-container {
@@ -94,7 +98,7 @@
 <body>
 
 <div class="header">
-    <h1 style = "text-align: 'center';">Retail KPI Dashboard</h1>
+    <h1>Retail KPI Dashboard</h1>
     <a href="{{ url_for('index') }}" class="logout-btn">Logout</a>
 </div>
 
@@ -106,6 +110,12 @@
             <a href="{{ url_for('search') }}">
                 <h3>Search</h3>
                 <p>Search for Data</p>
+            </a>
+        </div> 
+        <div class="kpi">
+            <a href="{{ url_for('sample_datapull') }}">
+                <h3>Sample Datapull</h3>
+                <p>Click for Sample datapull</p>
             </a>
         </div> 
         <div class="kpi">

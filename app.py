@@ -25,8 +25,8 @@ def normalize_columns(df):
     return df
 
 valid_username = "admin"
-valid_password = "password123"
-valid_email = "admin@example.com"
+valid_password = "12345678"
+valid_email = "admin@gmail.com"
 
 @app.route('/')
 def index():
@@ -202,11 +202,13 @@ def upload():
             return f"An error occurred while uploading data: {e}"
 
     return render_template('upload.html')
+    #return redirect(url_for('dashboard'))  # Redirect after successful POST
+
 
 # Load datasets
-households = pd.read_csv('https://cloudfinalassignment36.blob.core.windows.net/households/400_households.csv')
-transactions = pd.read_csv('https://cloudfinalassignment36.blob.core.windows.net/transactions/400_transactions.csv')
-products = pd.read_csv('https://cloudfinalassignment36.blob.core.windows.net/products/400_products.csv')
+households = pd.read_csv('400_households.csv')
+transactions = pd.read_csv('400_transactions.csv')
+products = pd.read_csv('400_products.csv')
 
 # Standardize column names
 transactions.columns = transactions.columns.str.strip().str.lower()
@@ -220,7 +222,57 @@ merged = (
 )
 
 
+@app.route('/sample_datapull')
+def sample_datapull():
+    try:
+        # Connect to the database
+        conn = pyodbc.connect(DB_CONNECTION_STRING)
+        cursor = conn.cursor()
+        
+        # Execute the SQL query
+        query = """
+        SELECT 
+            T.Hshd_num,
+            T.Basket_num,
+            T.Date,
+            T.Product_num,
+            T.Spend, 
+            T.Units, 
+            T.Store_region, 
+            T.Week_num, 
+            T.Year,
+            H.Loyalty_flag, 
+            H.Age_range, 
+            H.Marital_status, 
+            H.Income_range,
+            H.Homeowner_flag, 
+            H.Household_composition, 
+            H.HH_size, 
+            H.Children,
+            P.Department,
+            P.Commodity,
+            P.Brand_type, 
+            P.Natural_organic_flag
+        FROM Transactions T
+        INNER JOIN Households H ON T.Hshd_num = H.Hshd_num
+        INNER JOIN Products P ON T.Product_num = P.Product_num
+        WHERE T.Hshd_num = 10
+        ORDER BY T.Hshd_num, T.Basket_num, T.Date, T.Product_num, P.Department, P.Commodity;
 
+        """
+        cursor.execute(query)
+        
+        # Fetch results
+        # Fetch column names
+        columns = [column[0] for column in cursor.description]
+        results = cursor.fetchall()
+        conn.close()
+        
+        # Pass results to the template
+        return render_template('sample_datapull.html', columns=columns, results=results)
+    
+    except Exception as e:
+        return f"An error occurred: {e}"
 
 @app.route('/basket_analysis_ml', methods=['GET', 'POST'])
 def basket_analysis_ml():
@@ -315,6 +367,7 @@ def basket_analysis():
     )
 
     return fig.to_html()
+
 
 @app.route('/seasonal_trends')
 def seasonal_trends():

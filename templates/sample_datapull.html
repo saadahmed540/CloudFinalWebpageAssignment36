@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sample Data Pull</title>
+    <style>
+        /* General Page Styling */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        /* Header Styling */
+        .header {
+            display: flex;
+            justify-content: center; /* Center header content */
+            align-items: center;
+            background-color: #007bff;
+            color: white;
+            padding: 20px 30px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 32px;
+            text-align: center;
+        }
+        .btn-small {
+            position: absolute;
+            left: 30px;
+            padding: 8px 12px;
+            font-size: 14px;
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .btn-small:hover {
+            background-color: #5a6268;
+        }
+
+        /* Table Styling */
+        .data-table {
+            width: 95%;
+            margin: 0 auto;
+            border-collapse: collapse;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .data-table th, .data-table td {
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        .data-table th {
+            background-color: #343a40;
+            color: white;
+            font-size: 16px;
+            text-transform: uppercase;
+        }
+        .data-table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .data-table tr:hover {
+            background-color: #d4edda;
+        }
+
+        /* Column-Specific Colors */
+        .col-hshd_num { background-color: #e8f0fe; } /* Light Blue */
+        .col-basket_num { background-color: #fdf7e3; } /* Light Yellow */
+        .col-date { background-color: #e6ffe6; } /* Light Green */
+        .col-product_num { background-color: #ffe6e6; } /* Light Red */
+        .col-spend { background-color: #f0e6ff; } /* Light Purple */
+        .col-units { background-color: #fff3e0; } /* Light Orange */
+        .col-store_region { background-color: #e1f5fe; } /* Light Aqua */
+        .col-week_num { background-color: #f8e1f5; } /* Light Pink */
+        .col-year { background-color: #e0f7fa; } /* Light Cyan */
+        .col-loyalty_flag { background-color: #e0f0ff; } /* Light Indigo */
+        .col-age_range { background-color: #f9f1e0; } /* Light Brown */
+        .col-income_range { background-color: #f0ffe0; } /* Light Lime */
+        .col-department { background-color: #e8e8ff; } /* Soft Lavender */
+        .col-commodity { background-color: #ffe4e1; } /* Soft Coral */
+        .col-brand_type { background-color: #f0f7ea; } /* Light Olive */
+        .col-natural_organic_flag { background-color: #f3e8ff; } /* Light Magenta */
+
+        /* Responsive Styling */
+        @media screen and (max-width: 768px) {
+            .data-table th, .data-table td {
+                padding: 8px;
+                font-size: 12px;
+            }
+            h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="header">
+        <a href="{{ url_for('dashboard') }}" class="btn-small">Dashboard</a>
+        <h1>Sample Data Pull Results</h1>
+    </div>
+
+    <!-- Table -->
+    <table class="data-table">
+        <thead>
+            <tr>
+                {% for column in columns %}
+                    <th>{{ column }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% if results %}
+                {% for row in results %}
+                    <tr>
+                        {% for cell in row %}
+                            {% set column_name = columns[loop.index0] %}
+                            <td class="col-{{ column_name.lower().replace(' ', '_') }}">{{ cell }}</td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="{{ columns|length }}">No data available</td>
+                </tr>
+            {% endif %}
+        </tbody>
+    </table>
+
+</body>
+</html>
