@@ -196,7 +196,7 @@ def upload():
             conn.close()
 
             # Redirect to the search page after successful upload
-            return redirect(url_for('search_data'))
+            return redirect(url_for('search'))
 
         except Exception as e:
             return f"An error occurred while uploading data: {e}"
