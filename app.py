@@ -25,8 +25,8 @@ def normalize_columns(df):
     return df
 
 valid_username = "admin"
-valid_password = "12345678"
-valid_email = "admin@gmail.com"
+valid_password = "Group36"
+valid_email = "admin@example.com"
 
 @app.route('/')
 def index():
@@ -202,13 +202,11 @@ def upload():
             return f"An error occurred while uploading data: {e}"
 
     return render_template('upload.html')
-    #return redirect(url_for('dashboard'))  # Redirect after successful POST
-
 
 # Load datasets
-households = pd.read_csv('400_households.csv')
-transactions = pd.read_csv('400_transactions.csv')
-products = pd.read_csv('400_products.csv')
+households = pd.read_csv('https://cloudfinalassignment36.blob.core.windows.net/households/400_households.csv')
+transactions = pd.read_csv('https://cloudfinalassignment36.blob.core.windows.net/transactions/400_transactions.csv')
+products = pd.read_csv('https://cloudfinalassignment36.blob.core.windows.net/products/400_products.csv')
 
 # Standardize column names
 transactions.columns = transactions.columns.str.strip().str.lower()
@@ -220,7 +218,6 @@ merged = (
     transactions.merge(products, on='product_num', how='left')
     .merge(households, on='hshd_num', how='left')
 )
-
 
 @app.route('/sample_datapull')
 def sample_datapull():
@@ -273,6 +270,8 @@ def sample_datapull():
     
     except Exception as e:
         return f"An error occurred: {e}"
+
+
 
 @app.route('/basket_analysis_ml', methods=['GET', 'POST'])
 def basket_analysis_ml():
@@ -367,7 +366,6 @@ def basket_analysis():
     )
 
     return fig.to_html()
-
 
 @app.route('/seasonal_trends')
 def seasonal_trends():
