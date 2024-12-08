@@ -26,7 +26,7 @@ def normalize_columns(df):
 
 valid_username = "admin"
 valid_password = "Group36"
-valid_email = "admin@example.com"
+valid_email = "admin@gmail.com"
 
 @app.route('/')
 def index():
